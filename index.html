@@ -207,10 +207,11 @@
       box-shadow: 0 0 30px rgba(230,57,70,0.3);
     }
 
-    .pillow-box::after {
-      content: '🛏️';
-      font-size: 4rem;
-      filter: grayscale(0.3);
+    .pillow-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 2px;
     }
 
     .pillow-label {
@@ -321,6 +322,7 @@
         Sinon, il reçoit ce <span class="highlight">body pillow</span> pour son anniversaire 🎁
       </p>
       <div class="pillow-box">
+        <img src="pillow.jpg" alt="Body Pillow" />
         <div class="pillow-label">PRIX DE CONSOLATION</div>
       </div>
     </div>
