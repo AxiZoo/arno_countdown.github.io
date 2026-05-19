@@ -1,10 +1,396 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <title>Mon site</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arno's Deadline 💔</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #e63946;
+      --cream: #f1faee;
+      --dark: #1a1a2e;
+      --mid: #16213e;
+      --accent: #ffd60a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--dark);
+      color: var(--cream);
+      font-family: 'IBM Plex Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(230,57,70,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(230,57,70,0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridScroll 20s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes gridScroll {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding: 40px 20px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      letter-spacing: 0.05em;
+      text-align: center;
+      line-height: 1.1;
+      color: var(--cream);
+      text-shadow: 3px 3px 0 var(--red);
+      animation: titlePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { text-shadow: 3px 3px 0 var(--red); }
+      50% { text-shadow: 3px 3px 20px var(--red), 0 0 40px rgba(230,57,70,0.4); }
+    }
+
+    .title span {
+      color: var(--accent);
+    }
+
+    /* Timer box */
+    .timer-box {
+      background: var(--mid);
+      border: 2px solid var(--red);
+      border-radius: 4px;
+      padding: 30px 40px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      box-shadow: 0 0 40px rgba(230,57,70,0.2), inset 0 0 40px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timer-box::before {
+      content: 'COUNTDOWN';
+      position: absolute;
+      top: 8px;
+      left: 16px;
+      font-size: 0.65rem;
+      color: var(--red);
+      letter-spacing: 0.2em;
+      opacity: 0.7;
+    }
+
+    .timer-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      min-width: 80px;
+    }
+
+    .timer-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 6rem);
+      color: var(--cream);
+      line-height: 1;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .timer-number.tick {
+      color: var(--red);
+      animation: tick 0.3s ease-out;
+    }
+
+    @keyframes tick {
+      0% { transform: scale(1.15); color: var(--red); }
+      100% { transform: scale(1); color: var(--cream); }
+    }
+
+    .timer-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      color: var(--red);
+      opacity: 0.8;
+    }
+
+    .separator {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 6rem);
+      color: var(--red);
+      line-height: 1;
+      animation: blink 1s step-end infinite;
+      align-self: flex-start;
+      padding-top: 2px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.1; }
+    }
+
+    /* Deadline tag */
+    .deadline-tag {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      opacity: 0.9;
+      text-align: center;
+    }
+
+    /* Consequence section */
+    .consequence {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .consequence-text {
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+      letter-spacing: 0.05em;
+      text-align: center;
+      color: var(--cream);
+      opacity: 0.85;
+    }
+
+    .consequence-text .highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Pillow image box */
+    .pillow-box {
+      border: 2px solid rgba(230,57,70,0.5);
+      border-radius: 4px;
+      width: 280px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--mid);
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .pillow-box:hover {
+      border-color: var(--red);
+      box-shadow: 0 0 30px rgba(230,57,70,0.3);
+    }
+
+    .pillow-box::after {
+      content: '🛏️';
+      font-size: 4rem;
+      filter: grayscale(0.3);
+    }
+
+    .pillow-label {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--red);
+      opacity: 0.7;
+    }
+
+    /* Danger bar */
+    .danger-bar {
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.5;
+      border-radius: 2px;
+    }
+
+    /* Progress bar */
+    .progress-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--red);
+      opacity: 0.7;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(230,57,70,0.3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), var(--accent));
+      border-radius: 2px;
+      transition: width 1s linear;
+    }
+
+    /* Expired state */
+    .expired-message {
+      display: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 8vw, 5rem);
+      color: var(--red);
+      text-align: center;
+      animation: shake 0.5s ease-in-out infinite alternate;
+      text-shadow: 0 0 30px rgba(230,57,70,0.8);
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(-1deg) scale(1.02); }
+      100% { transform: rotate(1deg) scale(0.98); }
+    }
+  </style>
 </head>
 <body>
-  <h1>Bonjour !</h1>
-  <p>Mon site est en ligne.</p>
+  <div class="container">
+    <h1 class="title">Countdown avant qu'<span>Arno</span><br>trouve une copine</h1>
+
+    <div class="timer-box">
+      <div class="timer-unit">
+        <div class="timer-number" id="days">000</div>
+        <div class="timer-label">JOURS</div>
+      </div>
+      <div class="separator">:</div>
+      <div class="timer-unit">
+        <div class="timer-number" id="hours">00</div>
+        <div class="timer-label">HEURES</div>
+      </div>
+      <div class="separator">:</div>
+      <div class="timer-unit">
+        <div class="timer-number" id="minutes">00</div>
+        <div class="timer-label">MINUTES</div>
+      </div>
+      <div class="separator">:</div>
+      <div class="timer-unit">
+        <div class="timer-number" id="seconds">00</div>
+        <div class="timer-label">SECONDES</div>
+      </div>
+    </div>
+
+    <div class="deadline-tag">⚠ DEADLINE : 31 JANVIER 2027 — 23:59:59 ⚠</div>
+
+    <div class="progress-wrapper">
+      <div class="progress-label">TEMPS ÉCOULÉ DEPUIS LE DÉBUT DE LA MISSION</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress"></div>
+      </div>
+    </div>
+
+    <div class="danger-bar"></div>
+
+    <div class="consequence">
+      <p class="consequence-text">
+        Sinon, il reçoit ce <span class="highlight">body pillow</span> pour son anniversaire 🎁
+      </p>
+      <div class="pillow-box">
+        <div class="pillow-label">PRIX DE CONSOLATION</div>
+      </div>
+    </div>
+
+    <div class="expired-message" id="expired">
+      🚨 TROP TARD, ARNO ! 🚨<br>LE BODY PILLOW ARRIVE 🛏️
+    </div>
+  </div>
+
+  <script>
+    const deadline = new Date('2027-01-31T23:59:59');
+    // Mission start: today roughly (adjust if needed)
+    const missionStart = new Date('2025-01-01T00:00:00');
+
+    const daysEl    = document.getElementById('days');
+    const hoursEl   = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    const progressEl = document.getElementById('progress');
+    const expiredEl  = document.getElementById('expired');
+
+    function pad(n, len = 2) {
+      return String(Math.floor(n)).padStart(len, '0');
+    }
+
+    function flashTick(el) {
+      el.classList.remove('tick');
+      void el.offsetWidth;
+      el.classList.add('tick');
+    }
+
+    let lastSec = -1;
+
+    function update() {
+      const now = new Date();
+      const diff = deadline - now;
+
+      if (diff <= 0) {
+        document.querySelector('.timer-box').style.display = 'none';
+        document.querySelector('.deadline-tag').style.display = 'none';
+        expiredEl.style.display = 'block';
+        return;
+      }
+
+      const totalSeconds = Math.floor(diff / 1000);
+      const s = totalSeconds % 60;
+      const m = Math.floor(totalSeconds / 60) % 60;
+      const h = Math.floor(totalSeconds / 3600) % 24;
+      const d = Math.floor(totalSeconds / 86400);
+
+      daysEl.textContent    = pad(d, 3);
+      hoursEl.textContent   = pad(h);
+      minutesEl.textContent = pad(m);
+
+      if (s !== lastSec) {
+        secondsEl.textContent = pad(s);
+        flashTick(secondsEl);
+        if (s === 59) flashTick(minutesEl);
+        lastSec = s;
+      }
+
+      // Progress bar
+      const totalDuration = deadline - missionStart;
+      const elapsed = now - missionStart;
+      const pct = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+      progressEl.style.width = pct.toFixed(2) + '%';
+    }
+
+    update();
+    setInterval(update, 500);
+  </script>
 </body>
 </html>
